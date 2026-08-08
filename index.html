@@ -58,6 +58,11 @@
   }
   nav.mainnav button:hover{color:var(--ink);background:var(--paper-2)}
   nav.mainnav button.active{background:var(--rose-deep);color:#fff}
+  .sync-badge{font-size:12px;color:var(--ink-soft);white-space:nowrap}
+  .sync-badge.sy-busy{color:var(--gold)}
+  .sync-badge.sy-ok{color:var(--ok)}
+  .sync-badge.sy-off{color:var(--bad)}
+  @media (max-width:860px){.sync-badge{display:none}}
 
   .view{display:none;animation:fade .4s ease}
   .view.on{display:block}
@@ -107,6 +112,12 @@
   .prod .thumb img{width:100%;height:100%;object-fit:cover;border-radius:12px}
   .prod h3{margin:0 0 4px;font-size:18px;color:var(--ink)}
   .prod p{color:var(--ink-soft);font-size:14px;margin:6px 0 0}
+  .prod .price-row{display:flex;align-items:baseline;gap:8px;margin-top:10px;flex-wrap:wrap}
+  .prod .price-now{font-family:"El Messiri";font-size:20px;font-weight:700;color:var(--rose-deep)}
+  .prod .price-old{font-size:14px;color:var(--ink-soft);text-decoration:line-through}
+  .prod .price-badge{background:var(--bad);color:#fff;font-size:11px;padding:2px 8px;border-radius:999px;font-weight:500}
+  .prod .video-link{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:13px;color:var(--rose);text-decoration:none;font-weight:500}
+  .prod .video-link:hover{color:var(--rose-deep);text-decoration:underline}
 
   .social-strip{background:var(--rose-deep);color:#fff}
   .social-strip .wrap{padding:38px 20px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
@@ -235,6 +246,7 @@
       <img id="brandLogo" src="" alt="شعار Levanya" />
       <div>Levanya <span class="script">| لفانيا</span><small>الورد الكروشيه اليدوي</small></div>
     </div>
+    <span id="syncBadge" class="sync-badge"></span>
     <nav class="mainnav">
       <button data-view="store" class="active">المتجر</button>
       <button data-view="admin">لوحة الإدارة</button>
@@ -265,10 +277,10 @@
   <section class="block" id="pricing">
     <div class="wrap">
       <div class="sec-head">
-        <div><h2>الأسعار حسب المقاس</h2><p>الباقات تُصمّم حسب طلبك — اختاري المقاس المناسب.</p></div>
+        <div><h2>الأسعار حسب المقاس</h2><p>مقاس عام لأي طلب خاص — أما كل تصميم فله سعره الموضّح تحت صورته.</p></div>
       </div>
       <div class="pricing-card">
-        <p class="note">الأسعار موحّدة لكل التصاميم، وتُغلَّف بعناية. لأي طلب خاص، تواصلي معنا عبر واتساب.</p>
+        <p class="note">هذي أسعار المقاسات العامة لأي طلب مخصّص. أسعار التصاميم الجاهزة موضّحة تحت كل تصميم بالأسفل.</p>
         <div class="pricing-grid" id="pricingGrid"></div>
       </div>
     </div>
@@ -359,17 +371,20 @@
       <!-- designs -->
       <section class="panel-view" data-p="designs">
         <h2 class="panel-title">التصاميم والصور</h2>
-        <p class="panel-sub">أضيفي تصاميم جديدة وارفعي صورها؛ تظهر مباشرة في صفحة المتجر.</p>
+        <p class="panel-sub">أضيفي تصاميم جديدة، وتحكّمي بسعر كل تصميم على حدة، وارفعي صورها أو رابط فيديو لها.</p>
         <div class="add-card">
           <h4>إضافة تصميم جديد</h4>
           <div class="upload-row">
             <img class="prev" id="newDesignPrev" src="" alt="" />
             <label class="file-btn">اختيار صورة<input type="file" id="newDesignFile" accept="image/*" hidden></label>
-            <span style="font-size:12px;color:var(--ink-soft)">اختياري — إذا ما رفعتِ صورة يظهر رمز 🌸ب دلاً منها</span>
+            <span style="font-size:12px;color:var(--ink-soft)">اختياري — إذا ما رفعتِ صورة يظهر رمز 🌸 بدلاً منها</span>
           </div>
           <div class="form-grid">
             <div class="field"><label>اسم التصميم</label><input id="dName" placeholder="باقة الليليوم الوردي"/></div>
             <div class="field"><label>وصف مختصر</label><input id="dDesc" placeholder="تدرجات وردية، تغليف أنيق"/></div>
+            <div class="field"><label>السعر (ر.س)</label><input id="dPrice" type="number" placeholder="25"/></div>
+            <div class="field"><label>السعر قبل الخصم (اختياري)</label><input id="dOldPrice" type="number" placeholder="35"/></div>
+            <div class="field" style="grid-column:1/-1"><label>رابط فيديو (اختياري)</label><input id="dVideo" placeholder="https://www.tiktok.com/@levanya111/video/..."/></div>
           </div>
           <button class="btn primary" id="addDesign">إضافة التصميم</button>
         </div>
@@ -393,13 +408,12 @@
       <!-- social -->
       <section class="panel-view" data-p="social">
         <h2 class="panel-title">روابط التواصل</h2>
-        <p class="panel-sub">نظّمي روابط منصّاتك ورقم واتساب في مكان واحد.</p>
+        <p class="panel-sub">نظّمي روابط منصّاتك؛ الأيقونة تتحدد تلقائياً حسب اسم المنصّة.</p>
         <div class="add-card">
           <h4>إضافة رابط</h4>
           <div class="form-grid">
-            <div class="field"><label>المنصّة</label><input id="sPlat" placeholder="إنستقرام"/></div>
-            <div class="field"><label>الرمز</label><input id="sIcon" placeholder="📷" maxlength="4"/></div>
-            <div class="field" style="grid-column:1/-1"><label>الرابط أو الرقم</label><input id="sUrl" placeholder="https://instagram.com/…"/></div>
+            <div class="field"><label>المنصّة</label><input id="sPlat" placeholder="إنستقرام أو سناب شات أو تيك توك…"/></div>
+            <div class="field"><label>الرابط الكامل</label><input id="sUrl" placeholder="https://instagram.com/اسم_حسابك"/></div>
           </div>
           <button class="btn primary" id="addSocial">إضافة الرابط</button>
         </div>
@@ -508,15 +522,16 @@ const DB = {
   security:{ failedAttempts:0, lockUntil:0 },
   pricing:{ small:10, medium:15, large:20 },
   designs:[
-    {id:1,name:"باقة الليليوم الوردي",desc:"تدرجات وردية بكروشيه يدوي، تغليف Honey Flower.",emoji:"🌸",image:null},
-    {id:2,name:"باقة الليليوم الداكن",desc:"لون عنّابي فاخر يناسب المناسبات الرسمية.",emoji:"🥀",image:null},
-    {id:3,name:"تنسيق الزهور المتعددة",desc:"تشكيلة ألوان في إناء أنيق — مثالية كهدية منزلية.",emoji:"💐",image:null},
-    {id:4,name:"باقة حسب الطلب",desc:"أخبرينا بالألوان والمقاس المفضّل ونصمم لك.",emoji:"🎀",image:null}
+    {id:1,name:"باقة الليليوم الوردي",desc:"تدرجات وردية بكروشيه يدوي، تغليف Honey Flower.",emoji:"🌸",image:null,price:25,oldPrice:null,videoUrl:""},
+    {id:2,name:"باقة الليليوم الداكن",desc:"لون عنّابي فاخر يناسب المناسبات الرسمية.",emoji:"🥀",image:null,price:25,oldPrice:null,videoUrl:""},
+    {id:3,name:"تنسيق الزهور المتعددة",desc:"تشكيلة ألوان في إناء أنيق — مثالية كهدية منزلية.",emoji:"💐",image:null,price:40,oldPrice:50,videoUrl:""},
+    {id:4,name:"باقة حسب الطلب",desc:"أخبرينا بالألوان والمقاس المفضّل ونصمم لك.",emoji:"🎀",image:null,price:null,oldPrice:null,videoUrl:""}
   ],
   social:[
-    {id:1,plat:"واتساب",icon:"🟢",url:"https://wa.me/966509250195"},
-    {id:2,plat:"إنستقرام",icon:"📷",url:"https://instagram.com/levanya111"},
-    {id:3,plat:"تيك توك",icon:"🎵",url:"https://www.tiktok.com/@levanya111"}
+    {id:1,plat:"واتساب",url:"https://wa.me/966509250195"},
+    {id:2,plat:"إنستقرام",url:"https://instagram.com/levanya111"},
+    {id:3,plat:"تيك توك",url:"https://www.tiktok.com/@levanya111"},
+    {id:4,plat:"سناب شات",url:"https://www.snapchat.com/add/levanya111"}
   ],
   replies:[
     {id:1,keys:["مرحبا","السلام","اهلا","هلا"],chan:"الكل",resp:"أهلاً بك في Levanya 🌹 كيف نقدر نخدمك اليوم؟"},
@@ -546,6 +561,32 @@ function log(type,msg){
 }
 function fmtTime(ts){return new Date(ts).toLocaleString("ar",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});}
 function waLink(num){return "https://wa.me/"+String(num).replace(/[^0-9]/g,"");}
+function normalizeUrl(u){
+  u = String(u||"").trim();
+  if(!u) return "#";
+  if(/^https?:\/\//i.test(u)) return u;
+  if(/^(mailto:|tel:)/i.test(u)) return u;
+  return "https://" + u.replace(/^\/+/,"");
+}
+
+/* أيقونات SVG أنيقة بدل الإيموجي — تُختار تلقائياً حسب اسم المنصة */
+const SOCIAL_ICONS = {
+  whatsapp: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 21l1.4-4.2A8.5 8.5 0 1 1 8 19.4L3 21Z"/><path d="M8.3 9.6c.3 2 2.1 3.8 4.1 4.1.6.1 1-.5.7-1l-.7-1.2c-.2-.3-.5-.4-.8-.3l-.8.3c-.6-.4-1.4-1.2-1.8-1.8l.3-.8c.1-.3 0-.6-.3-.8L8 6.9c-.5-.3-1.1.1-1 .7.1.7.4 1.4.9 2Z" fill="currentColor" stroke="none"/></svg>',
+  instagram: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1" fill="currentColor" stroke="none"/></svg>',
+  tiktok: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 4v10.5a3.5 3.5 0 1 1-3.5-3.5"/><path d="M14 4c0 2.5 2 4.5 4.5 4.5"/></svg>',
+  snapchat: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 4c-2.5 0-4.2 1.9-4.2 4.3 0 1.1.1 2 0 2.7-.1.4-.6.7-1.3 1-.5.2-.5.8 0 1.1.5.3 1 .4 1.3.7.2.2 0 .6-.4.8-.6.3-.4 1 .2 1.1.6.1.9.3 1 .6.2.6 1.5 1.2 3.4 1.2s2.8-.6 3.4-1.2c.1-.3.4-.5 1-.6.6-.1.8-.8.2-1.1-.4-.2-.6-.6-.4-.8.3-.3.8-.4 1.3-.7.5-.3.5-.9 0-1.1-.7-.3-1.2-.6-1.3-1-.1-.7 0-1.6 0-2.7C16.2 5.9 14.5 4 12 4Z"/></svg>',
+  location: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s7-6.3 7-11.5A7 7 0 0 0 5 9.5C5 14.7 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.3"/></svg>',
+  link: '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9.5 14.5l5-5"/><path d="M11 7.5l1-1a3.5 3.5 0 0 1 5 5l-1 1"/><path d="M13 16.5l-1 1a3.5 3.5 0 0 1-5-5l1-1"/></svg>'
+};
+function socialIcon(plat){
+  const p = String(plat||"").toLowerCase();
+  if(p.includes("واتس")||p.includes("whatsapp")) return SOCIAL_ICONS.whatsapp;
+  if(p.includes("انستق")||p.includes("إنستق")||p.includes("instagram")) return SOCIAL_ICONS.instagram;
+  if(p.includes("تيك")||p.includes("tiktok")) return SOCIAL_ICONS.tiktok;
+  if(p.includes("سناب")||p.includes("snap")) return SOCIAL_ICONS.snapchat;
+  return SOCIAL_ICONS.link;
+}
+
 function fileToDataUrl(file,cb){
   const r=new FileReader();
   r.onload=()=>cb(r.result);
@@ -618,6 +659,7 @@ $("#changeCreds").onclick=()=>{
   $("#sideUser").textContent=newUn;
   log("أمان","تحديث اسم المستخدم وكلمة المرور");
   toast("تم تحديث بيانات الدخول");
+  persist();
 };
 
 /* ============================================================
@@ -659,14 +701,26 @@ function renderStore(){
     <div class="psize"><b>وسط</b><div class="amt">${DB.pricing.medium} <span>ر.س</span></div></div>
     <div class="psize"><b>كبير</b><div class="amt">${DB.pricing.large} <span>ر.س</span></div></div>`;
 
-  $("#storeDesigns").innerHTML = DB.designs.map(d=>`
+  $("#storeDesigns").innerHTML = DB.designs.map(d=>{
+    const hasPrice = d.price!==null && d.price!==undefined && d.price!=="";
+    const hasOld = d.oldPrice!==null && d.oldPrice!==undefined && d.oldPrice!=="" && Number(d.oldPrice)>Number(d.price||0);
+    const priceHtml = hasPrice ? `
+      <div class="price-row">
+        <span class="price-now">${esc(d.price)} <span style="font-size:12px;font-weight:400">ر.س</span></span>
+        ${hasOld?`<span class="price-old">${esc(d.oldPrice)} ر.س</span><span class="price-badge">خصم</span>`:""}
+      </div>` : `<div class="price-row"><span style="font-size:13px;color:var(--ink-soft)">السعر حسب الطلب</span></div>`;
+    const videoHtml = d.videoUrl ? `<a class="video-link" href="${esc(normalizeUrl(d.videoUrl))}" target="_blank" rel="noopener">▶ شاهدي الفيديو</a>` : "";
+    return `
     <div class="card prod">
       <div class="thumb">${d.image?`<img src="${d.image}" alt="${esc(d.name)}"/>`:esc(d.emoji)}</div>
       <h3>${esc(d.name)}</h3>
       <p>${esc(d.desc)}</p>
-    </div>`).join("");
+      ${priceHtml}
+      ${videoHtml}
+    </div>`;
+  }).join("");
 
-  $("#storeSocial").innerHTML = DB.social.map(s=>`<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.icon)} ${esc(s.plat)}</a>`).join("");
+  $("#storeSocial").innerHTML = DB.social.map(s=>`<a href="${esc(normalizeUrl(s.url))}" target="_blank" rel="noopener">${socialIcon(s.plat)} ${esc(s.plat)}</a>`).join("");
 }
 
 function renderDash(){
@@ -683,26 +737,41 @@ function renderDash(){
 /* التصاميم والصور */
 function renderDesignsAdmin(){
   $("#adminDesigns").innerHTML = DB.designs.map(d=>`
-    <div class="item">
+    <div class="item" style="flex-wrap:wrap">
       <div class="thumb-sm">${d.image?`<img src="${d.image}" alt=""/>`:esc(d.emoji)}</div>
       <div class="grow">
         <h4>${esc(d.name)}</h4>
         <p>${esc(d.desc)}</p>
+        <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr;margin-top:10px">
+          <div class="field" style="margin-bottom:0"><label style="font-size:11px">السعر (ر.س)</label><input type="number" data-price="${d.id}" value="${d.price??""}" placeholder="—"/></div>
+          <div class="field" style="margin-bottom:0"><label style="font-size:11px">قبل الخصم (اختياري)</label><input type="number" data-oldprice="${d.id}" value="${d.oldPrice??""}" placeholder="—"/></div>
+          <div class="field" style="margin-bottom:0"><label style="font-size:11px">رابط فيديو (اختياري)</label><input data-video="${d.id}" value="${esc(d.videoUrl||"")}" placeholder="—"/></div>
+        </div>
       </div>
       <div class="row-btns">
+        <button class="mini ok" data-save-design="${d.id}">حفظ</button>
         <label class="mini lav" style="cursor:pointer">تغيير الصورة<input type="file" accept="image/*" hidden data-img-design="${d.id}"></label>
         <button class="mini bad" data-del-design="${d.id}">حذف</button>
       </div>
     </div>`).join("");
   $$("[data-del-design]").forEach(b=>b.onclick=()=>{
     DB.designs=DB.designs.filter(x=>x.id!=b.dataset.delDesign);
-    log("تصاميم","حذف تصميم");renderDesignsAdmin();renderStore();renderDash();toast("تم الحذف");
+    log("تصاميم","حذف تصميم");renderDesignsAdmin();renderStore();renderDash();toast("تم الحذف");persist();
+  });
+  $$("[data-save-design]").forEach(b=>b.onclick=()=>{
+    const id=b.dataset.saveDesign;
+    const d=DB.designs.find(x=>x.id==id); if(!d)return;
+    const pv=$(`[data-price="${id}"]`).value; const ov=$(`[data-oldprice="${id}"]`).value; const vv=$(`[data-video="${id}"]`).value;
+    d.price = pv===""?null:+pv;
+    d.oldPrice = ov===""?null:+ov;
+    d.videoUrl = vv.trim();
+    log("تصاميم",`تحديث سعر/فيديو: ${d.name}`);renderStore();toast("تم حفظ التعديل");persist();
   });
   $$("[data-img-design]").forEach(inp=>inp.addEventListener("change",e=>{
     const f=e.target.files[0]; if(!f)return;
     fileToDataUrl(f,(url)=>{
       const d=DB.designs.find(x=>x.id==inp.dataset.imgDesign);
-      if(d){d.image=url;log("تصاميم",`تحديث صورة: ${d.name}`);renderDesignsAdmin();renderStore();toast("تم تحديث الصورة");}
+      if(d){d.image=url;log("تصاميم",`تحديث صورة: ${d.name}`);renderDesignsAdmin();renderStore();toast("تم تحديث الصورة");persist();}
     });
   }));
 }
@@ -713,10 +782,14 @@ $("#newDesignFile").addEventListener("change",e=>{
 $("#addDesign").onclick=()=>{
   const n=$("#dName").value.trim(); if(!n){toast("أدخلي اسم التصميم");return;}
   const img=$("#newDesignPrev").dataset.pending || null;
-  DB.designs.push({id:nid(),name:n,desc:$("#dDesc").value.trim()||"—",emoji:"🌸",image:img});
-  ["dName","dDesc"].forEach(i=>$("#"+i).value="");
+  const pv=$("#dPrice").value, ov=$("#dOldPrice").value, vv=$("#dVideo").value.trim();
+  DB.designs.push({
+    id:nid(),name:n,desc:$("#dDesc").value.trim()||"—",emoji:"🌸",image:img,
+    price: pv===""?null:+pv, oldPrice: ov===""?null:+ov, videoUrl: vv
+  });
+  ["dName","dDesc","dPrice","dOldPrice","dVideo"].forEach(i=>$("#"+i).value="");
   $("#newDesignPrev").removeAttribute("src"); $("#newDesignPrev").removeAttribute("data-pending");
-  log("تصاميم",`إضافة تصميم: ${n}`);renderDesignsAdmin();renderStore();renderDash();toast("تمت الإضافة");
+  log("تصاميم",`إضافة تصميم: ${n}`);renderDesignsAdmin();renderStore();renderDash();toast("تمت الإضافة");persist();
 };
 
 /* الأسعار */
@@ -729,28 +802,28 @@ $("#savePricing").onclick=()=>{
   DB.pricing.small=+$("#priceSmall").value||0;
   DB.pricing.medium=+$("#priceMedium").value||0;
   DB.pricing.large=+$("#priceLarge").value||0;
-  log("أسعار","تحديث جدول الأسعار");renderStore();toast("تم حفظ الأسعار");
+  log("أسعار","تحديث جدول الأسعار");renderStore();toast("تم حفظ الأسعار");persist();
 };
 
 /* روابط التواصل */
 function renderSocialAdmin(){
   $("#adminSocial").innerHTML=DB.social.map(s=>`
     <div class="item">
-      <div class="thumb-sm">${esc(s.icon)}</div>
+      <div class="thumb-sm">${socialIcon(s.plat)}</div>
       <div class="grow"><h4>${esc(s.plat)}</h4><p>${esc(s.url)}</p></div>
       <div class="row-btns"><button class="mini bad" data-del-soc="${s.id}">حذف</button></div>
     </div>`).join("");
   $$("[data-del-soc]").forEach(b=>b.onclick=()=>{
     DB.social=DB.social.filter(x=>x.id!=b.dataset.delSoc);
-    log("تواصل","حذف رابط");renderSocialAdmin();renderStore();toast("تم الحذف");
+    log("تواصل","حذف رابط");renderSocialAdmin();renderStore();toast("تم الحذف");persist();
   });
 }
 $("#addSocial").onclick=()=>{
   const p=$("#sPlat").value.trim(),u=$("#sUrl").value.trim();
   if(!p||!u){toast("أدخلي المنصّة والرابط");return;}
-  DB.social.push({id:nid(),plat:p,icon:$("#sIcon").value.trim()||"🔗",url:u});
-  ["sPlat","sIcon","sUrl"].forEach(i=>$("#"+i).value="");
-  log("تواصل",`إضافة رابط: ${p}`);renderSocialAdmin();renderStore();toast("تمت الإضافة");
+  DB.social.push({id:nid(),plat:p,url:u});
+  ["sPlat","sUrl"].forEach(i=>$("#"+i).value="");
+  log("تواصل",`إضافة رابط: ${p}`);renderSocialAdmin();renderStore();toast("تمت الإضافة");persist();
 };
 
 /* الردود الآلية */
@@ -766,7 +839,7 @@ function renderReplies(){
     </div>`).join("");
   $$("[data-del-rep]").forEach(b=>b.onclick=()=>{
     DB.replies=DB.replies.filter(x=>x.id!=b.dataset.delRep);
-    log("ردود آلية","حذف سيناريو");renderReplies();toast("تم الحذف");
+    log("ردود آلية","حذف سيناريو");renderReplies();toast("تم الحذف");persist();
   });
 }
 $("#addReply").onclick=()=>{
@@ -775,7 +848,7 @@ $("#addReply").onclick=()=>{
   if(!keys.length||!resp){toast("أدخلي الكلمات والرد");return;}
   DB.replies.push({id:nid(),keys,chan:$("#rChan").value,resp});
   ["rKeys","rResp"].forEach(i=>$("#"+i).value="");
-  log("ردود آلية",`سيناريو جديد (${keys.length} كلمة مفتاحية)`);renderReplies();toast("تم الحفظ");
+  log("ردود آلية",`سيناريو جديد (${keys.length} كلمة مفتاحية)`);renderReplies();toast("تم الحفظ");persist();
 };
 
 function matchReply(text){
@@ -830,7 +903,7 @@ function renderMarketing(){
 }
 function setStatus(id,status,logMsg){
   const m=DB.marketing.find(x=>x.id==id);if(!m)return;
-  m.status=status;log("تسويق",`${logMsg}: ${m.title}`);renderMarketing();renderDash();
+  m.status=status;log("تسويق",`${logMsg}: ${m.title}`);renderMarketing();renderDash();persist();
 }
 
 async function generateIdeas(){
@@ -870,7 +943,7 @@ function addIdeas(list,src){
     if(it&&it.title){DB.marketing.unshift({id:nid(),title:it.title,body:it.body||"",status:"pending",src,ts:Date.now()});added++;}
   });
   log("تسويق",`أُضيفت ${added} فكرة بحالة «قيد المراجعة»`);
-  renderMarketing();renderDash();
+  renderMarketing();renderDash();persist();
 }
 $("#genIdeas").onclick=generateIdeas;
 
@@ -889,6 +962,7 @@ $("#logoFile").addEventListener("change",e=>{
     renderBrand();
     log("أمان","تحديث شعار المتجر");
     toast("تم تحديث الشعار");
+    persist();
   });
 });
 
@@ -909,15 +983,78 @@ $("#importData").onchange=e=>{
     const d=JSON.parse(r.result);
     delete d.admin; delete d.security; // منع أي محاولة عبث ببيانات الدخول عبر ملف مستورد
     Object.assign(DB,d);
-    log("بيانات","استيراد نسخة احتياطية (بيانات الدخول محمية ولم تتأثر)");renderAll();toast("تم استيراد البيانات");
+    log("بيانات","استيراد نسخة احتياطية (بيانات الدخول محمية ولم تتأثر)");renderAll();toast("تم استيراد البيانات");persist();
   }catch(err){toast("ملف غير صالح");}};
   r.readAsText(f);
 };
 
+/* ============================================================
+   الحفظ المشترك على الإنترنت — يجعل تعديلات أي شخص (نجلاء مثلاً)
+   تثبت وتظهر لكل من يفتح الموقع، بدل ما تبقى في متصفحه فقط
+   ============================================================ */
+const STATE_API = "https://n8n911n.app.n8n.cloud/webhook/levanya-state";
+const SAVE_SECRET = "levanya-secure-2026";
+let syncState = "idle"; // idle | syncing | saved | offline
+
+function setSyncBadge(state){
+  syncState = state;
+  const el = $("#syncBadge");
+  if(!el) return;
+  const map = {
+    idle:   ["", ""],
+    syncing:["جارٍ الحفظ…", "sy-busy"],
+    saved:  ["تم الحفظ ✓", "sy-ok"],
+    offline:["غير متصل — يعمل محلياً فقط", "sy-off"]
+  };
+  const [txt, cls] = map[state] || ["", ""];
+  el.textContent = txt;
+  el.className = "sync-badge " + cls;
+}
+
+async function loadState(){
+  try{
+    const res = await fetch(STATE_API, {method:"GET"});
+    const data = await res.json();
+    if(data && data.payload){
+      const saved = JSON.parse(data.payload);
+      ["store","admin","pricing","designs","social","replies","marketing"].forEach(k=>{
+        if(saved[k]!==undefined) DB[k]=saved[k];
+      });
+      log("مزامنة","تم تحميل آخر نسخة محفوظة على الإنترنت");
+    }
+  }catch(e){
+    log("مزامنة","تعذّر الاتصال بالخادم — يعمل بالنسخة المحلية الافتراضية");
+  }
+}
+
+let persistTimer;
+function persist(){
+  setSyncBadge("syncing");
+  clearTimeout(persistTimer);
+  persistTimer = setTimeout(async ()=>{
+    try{
+      const payload = JSON.stringify({
+        store: DB.store, admin: DB.admin, pricing: DB.pricing,
+        designs: DB.designs, social: DB.social, replies: DB.replies, marketing: DB.marketing
+      });
+      const res = await fetch(STATE_API, {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({payload, secret: SAVE_SECRET})
+      });
+      if(res.ok){ setSyncBadge("saved"); }
+      else{ setSyncBadge("offline"); }
+    }catch(e){
+      setSyncBadge("offline");
+    }
+  }, 500);
+}
+
 /* إقلاع */
-log("نظام","تشغيل متجر Levanya في وضع المعاينة المحلية");
+log("نظام","تشغيل متجر Levanya");
 renderBrand();
 renderStore();
+loadState().then(()=>{ renderBrand(); renderStore(); if(loggedIn) renderAll(); });
 </script>
 </body>
 </html>
