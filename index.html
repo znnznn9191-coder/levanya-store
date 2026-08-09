@@ -118,6 +118,22 @@
   .prod .price-badge{background:var(--bad);color:#fff;font-size:11px;padding:2px 8px;border-radius:999px;font-weight:500}
   .prod .video-link{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:13px;color:var(--rose);text-decoration:none;font-weight:500}
   .prod .video-link:hover{color:var(--rose-deep);text-decoration:underline}
+  .review-card{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+  .review-card .rname{font-family:"El Messiri";color:var(--rose-deep);font-weight:700;margin-bottom:6px}
+  .review-card p{color:var(--ink-soft);font-size:14px;margin:0}
+  .review-card time{display:block;margin-top:8px;font-size:12px;color:var(--ink-soft);opacity:.7}
+  .cart-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+  .cart-item:last-child{border-bottom:none}
+  .cart-item .ci-info{flex:1;min-width:0}
+  .cart-item .ci-name{font-weight:600;font-size:14px;color:var(--ink)}
+  .cart-item .ci-meta{font-size:12px;color:var(--ink-soft)}
+  .cart-item .ci-qty{display:flex;align-items:center;gap:6px}
+  .cart-item .ci-qty button{width:24px;height:24px;border-radius:6px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:14px;line-height:1}
+  .cart-item .ci-remove{color:var(--bad);font-size:18px;line-height:1;background:none;border:none;padding:4px}
+  .cart-total{display:flex;justify-content:space-between;align-items:center;padding:12px 0 0;font-family:"El Messiri";font-weight:700;color:var(--rose-deep)}
+  .design-add-row{display:flex;gap:8px;margin-top:10px;align-items:center}
+  .design-add-row select{flex:1;border:1px solid var(--line);border-radius:8px;padding:8px;font-size:13px;background:var(--paper)}
+  .design-add-row button{white-space:nowrap;border:none;background:var(--rose-deep);color:#fff;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:500}
 
   .social-strip{background:var(--rose-deep);color:#fff}
   .social-strip .wrap{padding:38px 20px;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
@@ -153,6 +169,7 @@
   .field input,.field textarea,.field select{width:100%;border:1px solid var(--line);border-radius:10px;
     padding:11px 13px;font-family:inherit;font-size:15px;background:var(--paper);color:var(--ink);outline:none;transition:.2s}
   .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--rose);background:#fff;box-shadow:0 0 0 3px rgba(156,90,105,.15)}
+  .field input[type="number"]{font-weight:700;font-size:16px;color:var(--ink);letter-spacing:.3px}
   .err{color:var(--bad);font-size:13px;min-height:18px;margin-top:2px}
 
   .admin-layout{display:grid;grid-template-columns:230px 1fr;gap:24px;padding:34px 0 70px}
@@ -249,7 +266,7 @@
     <span id="syncBadge" class="sync-badge"></span>
     <nav class="mainnav">
       <button data-view="store" class="active">المتجر</button>
-      <button data-view="admin">لوحة الإدارة</button>
+      <button data-view="admin" id="adminNavBtn" style="display:none">لوحة الإدارة</button>
     </nav>
   </div>
 </header>
@@ -289,9 +306,50 @@
   <section class="block" id="designs">
     <div class="wrap">
       <div class="sec-head">
-        <div><h2>تصاميمنا</h2><p>نماذج من أعمالنا — اختاري التصميم واطلبيه بالمقاس اللي يناسبك.</p></div>
+        <div><h2>تصاميمنا</h2><p>نماذج من أعمالنا — أضيفي أي تصميم يعجبك للسلة، وأرسلي طلبك دفعة وحدة.</p></div>
       </div>
       <div class="grid p3" id="storeDesigns"></div>
+    </div>
+  </section>
+
+  <section class="block" id="orderSection">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><h2>أرسلي طلبك</h2><p>راجعي سلتك وعبّي بياناتك، وبيوصلنا طلبك فوراً.</p></div>
+      </div>
+      <div class="pricing-card">
+        <div id="orderCartSummary"></div>
+        <div class="form-grid" style="margin-top:16px">
+          <div class="field"><label>اسمك</label><input id="ordName" placeholder="اسمك الكريم"/></div>
+          <div class="field"><label>رقم واتساب</label><input id="ordPhone" placeholder="05xxxxxxxx"/></div>
+          <div class="field"><label>طريقة الدفع المفضّلة</label>
+            <select id="ordPayment">
+              <option value="تحويل بنكي">تحويل بنكي</option>
+              <option value="STC Pay">STC Pay</option>
+              <option value="نقداً عند الاستلام">نقداً عند الاستلام</option>
+            </select>
+          </div>
+          <div class="field"><label>ملاحظات إضافية (اختياري)</label><input id="ordNotes" placeholder="لون معيّن، تاريخ التسليم، إلخ."/></div>
+        </div>
+        <button class="btn primary" id="submitOrder">إرسال الطلب</button>
+        <p id="paymentInfoNote" class="note" style="display:none;margin-top:14px"></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="reviewsSection">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><h2>آراء العميلات</h2><p>شاركينا تجربتك مع Levanya.</p></div>
+      </div>
+      <div class="grid p3" id="storeReviews"></div>
+      <div class="pricing-card" style="margin-top:20px">
+        <div class="form-grid">
+          <div class="field"><label>اسمك</label><input id="revName" placeholder="اسمك"/></div>
+          <div class="field" style="grid-column:1/-1"><label>تعليقك</label><input id="revComment" placeholder="شاركينا رأيك بالمنتج والتجربة"/></div>
+        </div>
+        <button class="btn primary" id="submitReview">إرسال التعليق</button>
+      </div>
     </div>
   </section>
 
@@ -304,6 +362,15 @@
       <div class="social-links" id="storeSocial"></div>
     </div>
   </div>
+</div>
+
+<!-- سلة التسوق -->
+<div class="chatbox" id="cartBox" style="inset-inline-start:auto;inset-inline-end:22px">
+  <div class="panel">
+    <div class="chat-h">🛍️ سلة طلبك</div>
+    <div class="chat-log" id="cartLog" style="height:auto;max-height:320px"></div>
+  </div>
+  <button class="chat-toggle" id="cartToggle" style="background:var(--rose-deep)">🛍️ السلة (<span id="cartCount">0</span>)</button>
 </div>
 
 <!-- chat tester -->
@@ -326,17 +393,19 @@
     <div class="login-card">
       <img class="logo-img" id="loginLogo" src="" alt="" />
       <h2>دخول الإدارة</h2>
-      <p>هذه المنطقة محمية باسم مستخدم وكلمة مرور.</p>
-      <div class="field">
-        <label for="unField">اسم المستخدم</label>
-        <input type="text" id="unField" placeholder="levanya111" autocomplete="off"/>
-      </div>
-      <div class="field">
-        <label for="pwField">كلمة المرور</label>
-        <input type="password" id="pwField" placeholder="••••••••" autocomplete="off"/>
-        <div class="err" id="pwErr"></div>
-      </div>
-      <button class="btn primary" id="loginBtn" style="width:100%;justify-content:center">دخول</button>
+      <p>هذه المنطقة محمية باسم مستخدم وكلمة مرور. يقدر متصفحك يحفظها ويفتحها ببصمة وجهك مستقبلاً.</p>
+      <form id="loginForm" autocomplete="on">
+        <div class="field">
+          <label for="unField">اسم المستخدم</label>
+          <input type="text" id="unField" name="username" placeholder="levanya111" autocomplete="username"/>
+        </div>
+        <div class="field">
+          <label for="pwField">كلمة المرور</label>
+          <input type="password" id="pwField" name="password" placeholder="••••••••" autocomplete="current-password"/>
+          <div class="err" id="pwErr"></div>
+        </div>
+        <button class="btn primary" id="loginBtn" type="submit" style="width:100%;justify-content:center">دخول</button>
+      </form>
     </div>
   </div>
 
@@ -352,6 +421,8 @@
       <button class="tab" data-panel="pricing"><span class="ic">💰</span> الأسعار</button>
       <button class="tab" data-panel="social"><span class="ic">🔗</span> روابط التواصل</button>
       <button class="tab" data-panel="replies"><span class="ic">🤖</span> الردود الآلية</button>
+      <button class="tab" data-panel="orders"><span class="ic">🧾</span> الطلبات الجديدة</button>
+      <button class="tab" data-panel="reviews"><span class="ic">💬</span> آراء العملاء</button>
       <button class="tab" data-panel="marketing"><span class="ic">📣</span> الأفكار التسويقية</button>
       <button class="tab" data-panel="logs"><span class="ic">📜</span> السجلّات</button>
       <button class="tab" data-panel="security"><span class="ic">🛡️</span> الأمان والدخول</button>
@@ -364,8 +435,11 @@
         <h2 class="panel-title">لوحة القيادة</h2>
         <p class="panel-sub">نظرة سريعة على حالة متجر Levanya اليوم.</p>
         <div class="stat-row" id="stats"></div>
-        <div class="sec-head"><div><h2 style="font-size:20px">آخر النشاطات</h2></div></div>
-        <div class="log-wrap" id="dashLogs"></div>
+        <div class="sec-head">
+          <div><h2 style="font-size:20px">آخر النشاطات</h2></div>
+          <button class="mini lav" id="toggleLogs">عرض السجل</button>
+        </div>
+        <div class="log-wrap" id="dashLogs" style="display:none"></div>
       </section>
 
       <!-- designs -->
@@ -384,8 +458,9 @@
             <div class="field"><label>وصف مختصر</label><input id="dDesc" placeholder="تدرجات وردية، تغليف أنيق"/></div>
             <div class="field"><label>السعر (ر.س)</label><input id="dPrice" type="number" placeholder="25"/></div>
             <div class="field"><label>السعر قبل الخصم (اختياري)</label><input id="dOldPrice" type="number" placeholder="35"/></div>
-            <div class="field" style="grid-column:1/-1"><label>رابط فيديو (اختياري)</label><input id="dVideo" placeholder="https://www.tiktok.com/@levanya111/video/..."/></div>
           </div>
+          <div class="field"><label>رابط فيديو (اختياري)</label><input id="dVideo" placeholder="https://www.tiktok.com/@levanya111/video/…"/></div>
+          <div class="field"><label>رابط صورة من الإنترنت (بديل عن رفع ملف)</label><input id="dImageUrl" placeholder="https://…"/></div>
           <button class="btn primary" id="addDesign">إضافة التصميم</button>
         </div>
         <div id="adminDesigns"></div>
@@ -437,6 +512,21 @@
         <div id="adminReplies"></div>
       </section>
 
+      <!-- orders -->
+      <section class="panel-view" data-p="orders">
+        <h2 class="panel-title">الطلبات الجديدة</h2>
+        <p class="panel-sub">كل طلب يوصل من صفحة المتجر يظهر هنا فوراً.</p>
+        <div class="stat-row" id="orderStats"></div>
+        <div id="adminOrders"></div>
+      </section>
+
+      <!-- reviews -->
+      <section class="panel-view" data-p="reviews">
+        <h2 class="panel-title">آراء العملاء</h2>
+        <p class="panel-sub">تظهر تعليقات العميلات في صفحة المتجر تلقائياً. تقدرين تحذفين أي تعليق غير لائق من هنا.</p>
+        <div id="adminReviews"></div>
+      </section>
+
       <!-- marketing -->
       <section class="panel-view" data-p="marketing">
         <h2 class="panel-title">الأفكار التسويقية</h2>
@@ -483,6 +573,13 @@
         </div>
 
         <div class="add-card">
+          <h4>بيانات الدفع (تحويل بنكي / STC Pay)</h4>
+          <p style="color:var(--ink-soft);font-size:14px;margin-top:0">هذا النص يظهر للزبونة تلقائياً بعد إرسال طلبها لو اختارت الدفع بتحويل.</p>
+          <div class="field"><textarea id="paymentInfoField" rows="2"></textarea></div>
+          <button class="btn primary" id="savePaymentInfo">حفظ بيانات الدفع</button>
+        </div>
+
+        <div class="add-card">
           <h4>نسخ احتياطي للبيانات</h4>
           <p style="color:var(--ink-soft);font-size:14px;margin-top:0">صدّري إعداداتك (تصاميم، أسعار، روابط، ردود، أفكار) كملف. النسخة المستوردة <b>لا تقدر تغيّر بيانات الدخول</b> — حماية من العبث.</p>
           <div class="row-btns">
@@ -516,6 +613,7 @@ const DB = {
     instagram:"https://instagram.com/levanya111",
     tiktok:"https://www.tiktok.com/@levanya111",
     location:"بريدة، القصيم",
+    paymentInfo:"تحويل بنكي: SA00 0000 0000 0000 0000 00 — أو STC Pay: 0509250195 (عدّلي هذي البيانات من الأمان والدخول)",
     logo: LOGO_DATA_URI
   },
   admin:{ username:"levanya111", password:"Levanya@2026" },
@@ -544,6 +642,8 @@ const DB = {
     {id:1,title:"حملة «باقتك بألوانك»",body:"ادعِ المتابعات يخترن الألوان، ونفّذي تصميماً أسبوعياً حسب الأكثر تصويتاً.",status:"pending",src:"مثال مبدئي",ts:Date.now()-86400000},
     {id:2,title:"ريلز خلف الكواليس",body:"مقطع قصير لخطوات حياكة باقة من الصفر على إنستقرام وتيك توك.",status:"approved",src:"مثال مبدئي",ts:Date.now()-43200000}
   ],
+  reviews:[],
+  orders:[],
   logs:[]
 };
 let uid = 1000;
@@ -568,6 +668,23 @@ function normalizeUrl(u){
   if(/^(mailto:|tel:)/i.test(u)) return u;
   return "https://" + u.replace(/^\/+/,"");
 }
+function instagramHandle(url){
+  const m = String(url||"").match(/instagram\.com\/([^/?#]+)/i);
+  return m ? m[1] : null;
+}
+function openSocialLink(e, url, plat){
+  const handle = String(plat||"").match(/انستق|إنستق|instagram/i) ? instagramHandle(url) : null;
+  if(!handle) return; // غير إنستقرام: يفتح عادي بالرابط الافتراضي
+  e.preventDefault();
+  const start = Date.now();
+  window.location.href = "instagram://user?username=" + handle; // محاولة فتح التطبيق مباشرة
+  setTimeout(()=>{
+    // لو التطبيق ما فتح خلال نص ثانية، افتحي نسخة الويب كبديل
+    if(Date.now() - start < 1600){
+      window.open(normalizeUrl(url), "_blank", "noopener");
+    }
+  }, 600);
+}
 
 /* أيقونات SVG أنيقة بدل الإيموجي — تُختار تلقائياً حسب اسم المنصة */
 const SOCIAL_ICONS = {
@@ -585,6 +702,11 @@ function socialIcon(plat){
   if(p.includes("تيك")||p.includes("tiktok")) return SOCIAL_ICONS.tiktok;
   if(p.includes("سناب")||p.includes("snap")) return SOCIAL_ICONS.snapchat;
   return SOCIAL_ICONS.link;
+}
+function designThumbSrc(d){
+  if(d.image) return d.image;
+  if(d.imageUrl) return normalizeUrl(d.imageUrl);
+  return null;
 }
 
 function fileToDataUrl(file,cb){
@@ -604,12 +726,23 @@ $$(".mainnav button").forEach(b=>b.onclick=()=>{
   window.scrollTo({top:0,behavior:"smooth"});
 });
 
+/* رابط الإدارة سرّي — زر "لوحة الإدارة" مخفي عن أي زائر عادي.
+   يظهر فقط عند فتح الموقع برابط ينتهي بـ #lvn-admin-levanya111
+   مثال: https://levanya-store-2026.onrender.com/#lvn-admin-levanya111 */
+const ADMIN_HASH = "#lvn-admin-levanya111";
+function checkAdminAccess(){
+  if(location.hash === ADMIN_HASH){
+    $("#adminNavBtn").style.display = "";
+  }
+}
+checkAdminAccess();
+window.addEventListener("hashchange", checkAdminAccess);
+
 /* ============================================================
    الأمان: اسم مستخدم + كلمة مرور + قفل مؤقت بعد محاولات فاشلة
    ============================================================ */
 let loggedIn=false;
-$("#loginBtn").onclick=tryLogin;
-["unField","pwField"].forEach(id=>$("#"+id).addEventListener("keydown",e=>{if(e.key==="Enter")tryLogin();}));
+$("#loginForm").addEventListener("submit", e=>{ e.preventDefault(); tryLogin(); });
 
 function tryLogin(){
   const now=Date.now();
@@ -680,7 +813,7 @@ $$(".side .tab").forEach(t=>{
    ============================================================ */
 function renderAll(){
   renderBrand();renderStore();renderPricingAdmin();renderDesignsAdmin();
-  renderSocialAdmin();renderReplies();renderMarketing();renderLogs();renderDash();
+  renderSocialAdmin();renderReplies();renderMarketing();renderOrdersAdmin();renderReviewsAdmin();renderLogs();renderDash();
 }
 
 function renderBrand(){
@@ -689,6 +822,7 @@ function renderBrand(){
     const el=$("#"+id); if(el) el.src=logo;
   });
   $("#sideUser").textContent=DB.admin.username;
+  const pf=$("#paymentInfoField"); if(pf) pf.value = DB.store.paymentInfo || "";
 }
 
 function renderStore(){
@@ -710,43 +844,67 @@ function renderStore(){
         ${hasOld?`<span class="price-old">${esc(d.oldPrice)} ر.س</span><span class="price-badge">خصم</span>`:""}
       </div>` : `<div class="price-row"><span style="font-size:13px;color:var(--ink-soft)">السعر حسب الطلب</span></div>`;
     const videoHtml = d.videoUrl ? `<a class="video-link" href="${esc(normalizeUrl(d.videoUrl))}" target="_blank" rel="noopener">▶ شاهدي الفيديو</a>` : "";
+    const addRow = `<div class="design-add-row">
+        <select id="size-${d.id}">
+          <option value="صغير">صغير</option>
+          <option value="وسط" selected>وسط</option>
+          <option value="كبير">كبير</option>
+        </select>
+        <button onclick="addToCart(${d.id})">أضيفي للسلة</button>
+      </div>`;
     return `
     <div class="card prod">
-      <div class="thumb">${d.image?`<img src="${d.image}" alt="${esc(d.name)}"/>`:esc(d.emoji)}</div>
+      <div class="thumb">${designThumbSrc(d)?`<img src="${designThumbSrc(d)}" alt="${esc(d.name)}"/>`:esc(d.emoji)}</div>
       <h3>${esc(d.name)}</h3>
       <p>${esc(d.desc)}</p>
       ${priceHtml}
       ${videoHtml}
+      ${addRow}
     </div>`;
   }).join("");
 
-  $("#storeSocial").innerHTML = DB.social.map(s=>`<a href="${esc(normalizeUrl(s.url))}" target="_blank" rel="noopener">${socialIcon(s.plat)} ${esc(s.plat)}</a>`).join("");
+  $("#storeSocial").innerHTML = DB.social.map(s=>`<a href="${esc(normalizeUrl(s.url))}" target="_blank" rel="noopener" onclick="openSocialLink(event,'${esc(s.url)}','${esc(s.plat)}')">${socialIcon(s.plat)} ${esc(s.plat)}</a>`).join("");
+
+  $("#storeReviews").innerHTML = DB.reviews.length ? DB.reviews.slice().reverse().map(r=>`
+    <div class="review-card">
+      <div class="rname">${esc(r.name)}</div>
+      <p>${esc(r.comment)}</p>
+      <time>${fmtTime(r.ts)}</time>
+    </div>`).join("") : `<p style="color:var(--ink-soft);grid-column:1/-1">لسا ما فيه تعليقات — كوني أول من تشارك رأيها 🌸</p>`;
 }
 
 function renderDash(){
   if(!loggedIn)return;
   const pend=DB.marketing.filter(m=>m.status==="pending").length;
+  const newOrders=DB.orders.filter(o=>o.status==="جديد").length;
   $("#stats").innerHTML=`
     <div class="stat"><b>${DB.designs.length}</b><span>تصميم معروض</span></div>
-    <div class="stat"><b>${DB.replies.length}</b><span>سيناريو رد آلي</span></div>
+    <div class="stat"><b>${newOrders}</b><span>طلب جديد بانتظارك</span></div>
     <div class="stat"><b>${pend}</b><span>فكرة بانتظار موافقتك</span></div>
-    <div class="stat"><b>${DB.social.length}</b><span>قناة تواصل</span></div>`;
+    <div class="stat"><b>${DB.reviews.length}</b><span>رأي من العملاء</span></div>`;
   $("#dashLogs").innerHTML=DB.logs.slice(0,8).map(l=>`<div class="log-line"><time>${fmtTime(l.ts)}</time><span><b>${esc(l.type)}:</b> ${esc(l.msg)}</span></div>`).join("")||`<div class="log-line" style="color:var(--ink-soft)">لا نشاط بعد.</div>`;
 }
+$("#toggleLogs").onclick=()=>{
+  const el=$("#dashLogs");
+  const open = el.style.display==="none";
+  el.style.display = open?"block":"none";
+  $("#toggleLogs").textContent = open?"إخفاء السجل":"عرض السجل";
+};
 
 /* التصاميم والصور */
 function renderDesignsAdmin(){
   $("#adminDesigns").innerHTML = DB.designs.map(d=>`
     <div class="item" style="flex-wrap:wrap">
-      <div class="thumb-sm">${d.image?`<img src="${d.image}" alt=""/>`:esc(d.emoji)}</div>
+      <div class="thumb-sm">${designThumbSrc(d)?`<img src="${designThumbSrc(d)}" alt=""/>`:esc(d.emoji)}</div>
       <div class="grow">
         <h4>${esc(d.name)}</h4>
         <p>${esc(d.desc)}</p>
-        <div class="form-grid" style="grid-template-columns:1fr 1fr 1fr;margin-top:10px">
+        <div class="form-grid" style="grid-template-columns:1fr 1fr;margin-top:10px">
           <div class="field" style="margin-bottom:0"><label style="font-size:11px">السعر (ر.س)</label><input type="number" data-price="${d.id}" value="${d.price??""}" placeholder="—"/></div>
           <div class="field" style="margin-bottom:0"><label style="font-size:11px">قبل الخصم (اختياري)</label><input type="number" data-oldprice="${d.id}" value="${d.oldPrice??""}" placeholder="—"/></div>
-          <div class="field" style="margin-bottom:0"><label style="font-size:11px">رابط فيديو (اختياري)</label><input data-video="${d.id}" value="${esc(d.videoUrl||"")}" placeholder="—"/></div>
         </div>
+        <div class="field" style="margin:10px 0 0"><label style="font-size:11px">رابط فيديو (اختياري)</label><input data-video="${d.id}" value="${esc(d.videoUrl||"")}" placeholder="https://…"/></div>
+        <div class="field" style="margin:10px 0 0"><label style="font-size:11px">رابط صورة من الإنترنت (بديل عن رفع ملف)</label><input data-imgurl="${d.id}" value="${esc(d.imageUrl||"")}" placeholder="https://…"/></div>
       </div>
       <div class="row-btns">
         <button class="mini ok" data-save-design="${d.id}">حفظ</button>
@@ -761,11 +919,13 @@ function renderDesignsAdmin(){
   $$("[data-save-design]").forEach(b=>b.onclick=()=>{
     const id=b.dataset.saveDesign;
     const d=DB.designs.find(x=>x.id==id); if(!d)return;
-    const pv=$(`[data-price="${id}"]`).value; const ov=$(`[data-oldprice="${id}"]`).value; const vv=$(`[data-video="${id}"]`).value;
+    const pv=$(`[data-price="${id}"]`).value; const ov=$(`[data-oldprice="${id}"]`).value;
+    const vv=$(`[data-video="${id}"]`).value; const iv=$(`[data-imgurl="${id}"]`).value;
     d.price = pv===""?null:+pv;
     d.oldPrice = ov===""?null:+ov;
     d.videoUrl = vv.trim();
-    log("تصاميم",`تحديث سعر/فيديو: ${d.name}`);renderStore();toast("تم حفظ التعديل");persist();
+    d.imageUrl = iv.trim();
+    log("تصاميم",`تحديث سعر/فيديو/صورة: ${d.name}`);renderDesignsAdmin();renderStore();toast("تم حفظ التعديل");persist();
   });
   $$("[data-img-design]").forEach(inp=>inp.addEventListener("change",e=>{
     const f=e.target.files[0]; if(!f)return;
@@ -782,12 +942,12 @@ $("#newDesignFile").addEventListener("change",e=>{
 $("#addDesign").onclick=()=>{
   const n=$("#dName").value.trim(); if(!n){toast("أدخلي اسم التصميم");return;}
   const img=$("#newDesignPrev").dataset.pending || null;
-  const pv=$("#dPrice").value, ov=$("#dOldPrice").value, vv=$("#dVideo").value.trim();
+  const pv=$("#dPrice").value, ov=$("#dOldPrice").value, vv=$("#dVideo").value.trim(), iu=$("#dImageUrl").value.trim();
   DB.designs.push({
     id:nid(),name:n,desc:$("#dDesc").value.trim()||"—",emoji:"🌸",image:img,
-    price: pv===""?null:+pv, oldPrice: ov===""?null:+ov, videoUrl: vv
+    price: pv===""?null:+pv, oldPrice: ov===""?null:+ov, videoUrl: vv, imageUrl: iu
   });
-  ["dName","dDesc","dPrice","dOldPrice","dVideo"].forEach(i=>$("#"+i).value="");
+  ["dName","dDesc","dPrice","dOldPrice","dVideo","dImageUrl"].forEach(i=>$("#"+i).value="");
   $("#newDesignPrev").removeAttribute("src"); $("#newDesignPrev").removeAttribute("data-pending");
   log("تصاميم",`إضافة تصميم: ${n}`);renderDesignsAdmin();renderStore();renderDash();toast("تمت الإضافة");persist();
 };
@@ -856,24 +1016,249 @@ function matchReply(text){
   for(const r of DB.replies){
     if(r.keys.some(k=>t.includes(k.toLowerCase())))return r.resp;
   }
-  return "شكراً لتواصلك 🌹 سيصلك ردّ من فريقنا قريباً. جربي تكتبي: الأسعار، التوصيل، أو الدوام.";
+  return null;
 }
+
+/* بناء ملخّص حيّ ببيانات المتجر الفعلية يُرسل للذكاء الاصطناعي مع كل سؤال */
+function buildStoreContext(){
+  const designsTxt = DB.designs.map(d=>{
+    const price = (d.price!==null && d.price!==undefined && d.price!=="") ? `${d.price} ر.س` : "حسب الطلب";
+    const old = (d.oldPrice && Number(d.oldPrice)>Number(d.price||0)) ? ` (كان ${d.oldPrice} ر.س، عليها خصم الآن)` : "";
+    return `- ${d.name}: ${d.desc} — السعر: ${price}${old}`;
+  }).join("\n");
+  const socialTxt = DB.social.map(s=>`${s.plat}: ${s.url}`).join(" | ");
+  return `اسم المتجر: ${DB.store.nameAr} (${DB.store.nameEn})
+الوصف: ${DB.store.tagline}
+الموقع: ${DB.store.location}
+واتساب: ${DB.store.whatsapp}
+حسابات التواصل: ${socialTxt}
+الأسعار العامة حسب المقاس: صغير ${DB.pricing.small} ر.س، وسط ${DB.pricing.medium} ر.س، كبير ${DB.pricing.large} ر.س
+التصاميم المتوفرة حالياً:
+${designsTxt}
+طرق الدفع المتاحة: تحويل بنكي، STC Pay، نقداً عند الاستلام. ${DB.store.paymentInfo?("بيانات الدفع: "+DB.store.paymentInfo):""}`;
+}
+
+async function askStoreAI(question){
+  const system = `أنتِ مساعدة مبيعات ودودة وراقية لمتجر ورد كروشيه يدوي اسمه Levanya | لفانيا. جاوبي بالعربي بلهجة سعودية بسيطة ومحترمة، بإيجاز (سطرين إلى أربعة أسطر كحد أقصى). اعتمدي فقط على المعلومات الحقيقية عن المتجر المذكورة تحت — لا تخترعي أسعار أو تصاميم غير موجودة. لو السؤال خارج نطاق المتجر تماماً، اعتذري بلطف ووجّهي العميلة للتواصل عبر واتساب.
+
+معلومات المتجر الحالية:
+${buildStoreContext()}`;
+  const res = await fetch("https://api.anthropic.com/v1/messages",{
+    method:"POST", headers:{"Content-Type":"application/json"},
+    body: JSON.stringify({
+      model:"claude-sonnet-4-6", max_tokens:300,
+      system: system,
+      messages:[{role:"user", content: question}]
+    })
+  });
+  const data = await res.json();
+  const txt = (data.content||[]).filter(b=>b.type==="text").map(b=>b.text).join("").trim();
+  if(!txt) throw new Error("empty");
+  return txt;
+}
+
 $("#chatToggle").onclick=()=>{
   const box=$("#chatbox");box.classList.toggle("open");
   if(box.classList.contains("open")&&!$("#chatLog").children.length)
-    addMsg("bot","أهلاً بك 🌸 اسأليني عن الأسعار أو التوصيل أو أوقات الدوام.");
+    addMsg("bot","أهلاً بك 🌸 اسأليني عن أي شي — الأسعار، التصاميم، التوصيل، أو الدفع.");
 };
 function addMsg(who,txt){
   const d=document.createElement("div");d.className="msg "+who;d.textContent=txt;
   $("#chatLog").appendChild(d);$("#chatLog").scrollTop=1e9;
+  return d;
 }
-function sendChat(){
+async function sendChat(){
   const v=$("#chatInput").value.trim();if(!v)return;
   addMsg("me",v);$("#chatInput").value="";
-  setTimeout(()=>addMsg("bot",matchReply(v)),350);
+  const typing = addMsg("bot","...جارٍ الكتابة");
+  const canned = matchReply(v);
+  try{
+    const smart = await askStoreAI(v);
+    typing.textContent = smart;
+  }catch(e){
+    typing.textContent = canned || "شكراً لتواصلك 🌹 سيصلك ردّ من فريقنا قريباً، أو تواصلي معنا مباشرة عبر واتساب.";
+  }
+  $("#chatLog").scrollTop=1e9;
 }
 $("#chatSend").onclick=sendChat;
 $("#chatInput").addEventListener("keydown",e=>{if(e.key==="Enter")sendChat();});
+
+/* السلة */
+let cart = [];
+function addToCart(designId){
+  const d = DB.designs.find(x=>x.id==designId); if(!d)return;
+  const sizeSel = $("#size-"+designId);
+  const size = sizeSel ? sizeSel.value : "وسط";
+  const existing = cart.find(c=>c.designId==designId && c.size===size);
+  if(existing){ existing.qty++; }
+  else{ cart.push({cartId:nid(), designId, name:d.name, price: d.price, size, qty:1}); }
+  renderCart();
+  toast(`أُضيفت "${d.name}" للسلة 🛍️`);
+  const box=$("#cartBox"); if(!box.classList.contains("open")) box.classList.add("open");
+}
+function changeQty(cartId, delta){
+  const item = cart.find(c=>c.cartId==cartId); if(!item)return;
+  item.qty += delta;
+  if(item.qty<=0) cart = cart.filter(c=>c.cartId!=cartId);
+  renderCart();
+}
+function removeFromCart(cartId){
+  cart = cart.filter(c=>c.cartId!=cartId);
+  renderCart();
+}
+function cartTotal(){
+  return cart.reduce((sum,c)=> sum + (c.price?Number(c.price)*c.qty:0), 0);
+}
+function renderCart(){
+  $("#cartCount").textContent = cart.reduce((s,c)=>s+c.qty,0);
+  const logEl = $("#cartLog");
+  if(!cart.length){
+    logEl.innerHTML = `<p style="color:var(--ink-soft);font-size:13px;padding:8px 0">سلتك فاضية — أضيفي تصميم من الأعلى.</p>`;
+  }else{
+    logEl.innerHTML = cart.map(c=>`
+      <div class="cart-item">
+        <div class="ci-info">
+          <div class="ci-name">${esc(c.name)}</div>
+          <div class="ci-meta">مقاس ${esc(c.size)} ${c.price?('· '+esc(c.price)+' ر.س'):'· السعر حسب الطلب'}</div>
+        </div>
+        <div class="ci-qty">
+          <button onclick="changeQty(${c.cartId},-1)">−</button>
+          <span>${c.qty}</span>
+          <button onclick="changeQty(${c.cartId},1)">+</button>
+        </div>
+        <button class="ci-remove" onclick="removeFromCart(${c.cartId})">✕</button>
+      </div>`).join("") + `<div class="cart-total"><span>الإجمالي</span><span>${cartTotal()} ر.س</span></div>`;
+  }
+  renderOrderSummary();
+}
+function renderOrderSummary(){
+  const el = $("#orderCartSummary"); if(!el)return;
+  if(!cart.length){
+    el.innerHTML = `<p style="color:var(--ink-soft);font-size:14px">سلتك فاضية — ارجعي لقسم "تصاميمنا" فوق وأضيفي التصميم اللي يعجبك أول.</p>`;
+    return;
+  }
+  el.innerHTML = `<p style="font-weight:600;color:var(--rose-deep);margin:0 0 8px">ملخص طلبك:</p>` +
+    cart.map(c=>`<p style="margin:2px 0;font-size:14px;color:var(--ink-soft)">• ${esc(c.name)} (${esc(c.size)}) × ${c.qty}${c.price?(' — '+(c.price*c.qty)+' ر.س'):''}</p>`).join("") +
+    `<p style="margin-top:8px;font-weight:700;color:var(--rose-deep)">الإجمالي: ${cartTotal()} ر.س</p>`;
+}
+$("#cartToggle").onclick=()=>{ $("#cartBox").classList.toggle("open"); };
+
+/* الطلبات — نموذج المتجر */
+function waLinkSmart(num){
+  let digits = String(num||"").replace(/[^0-9]/g,"");
+  if(digits.startsWith("966")) return "https://wa.me/"+digits;
+  if(digits.startsWith("0")) digits = digits.slice(1);
+  if(digits.length===9) digits = "966"+digits;
+  return "https://wa.me/"+digits;
+}
+$("#submitOrder").onclick=()=>{
+  const name=$("#ordName").value.trim();
+  const phone=$("#ordPhone").value.trim();
+  const notes=$("#ordNotes").value.trim();
+  const payment=$("#ordPayment").value;
+  if(!cart.length){toast("سلتك فاضية — أضيفي تصميم أول");return;}
+  if(!name||!phone){toast("أدخلي اسمك ورقم واتساب للتواصل");return;}
+  const items = cart.map(c=>({name:c.name, size:c.size, price:c.price, qty:c.qty}));
+  const total = cartTotal();
+  const order = {id:nid(), name, phone, items, total, notes, payment, status:"جديد", ts:Date.now()};
+  DB.orders.unshift(order);
+  log("طلبات",`طلب جديد من ${name} (${items.length} عنصر)`);
+  renderDash();
+  persist();
+  toast("تم إرسال طلبك، بنتواصل معك قريباً 🌸");
+  if(payment!=="نقداً عند الاستلام" && DB.store.paymentInfo){
+    const pn=$("#paymentInfoNote");
+    pn.textContent = "بيانات الدفع: " + DB.store.paymentInfo;
+    pn.style.display="block";
+  }
+  const itemsText = items.map(i=>`- ${i.name} (${i.size}) × ${i.qty}${i.price?(' = '+(i.price*i.qty)+' ر.س'):''}`).join("\n");
+  const msg = `طلب جديد من ${name}\n${itemsText}\nالإجمالي: ${total} ر.س\nطريقة الدفع: ${payment}\nملاحظات: ${notes||"لا يوجد"}\nرقم التواصل: ${phone}`;
+  window.open(waLink(DB.store.whatsapp) + "?text=" + encodeURIComponent(msg), "_blank");
+  ["ordName","ordPhone","ordNotes"].forEach(i=>$("#"+i).value="");
+  cart = [];
+  renderCart();
+  $("#cartBox").classList.remove("open");
+};
+$("#savePaymentInfo").onclick=()=>{
+  DB.store.paymentInfo = $("#paymentInfoField").value.trim();
+  log("أمان","تحديث بيانات الدفع");
+  toast("تم حفظ بيانات الدفع");
+  persist();
+};
+
+/* الطلبات — لوحة الإدارة */
+function renderOrdersAdmin(){
+  const total = DB.orders.length;
+  const pend = DB.orders.filter(o=>o.status==="جديد").length;
+  const doneCount = DB.orders.filter(o=>o.status==="مكتمل").length;
+  const estValue = DB.orders.reduce((sum,o)=> sum + (o.total!=null ? Number(o.total) : 0), 0);
+  const statsEl=$("#orderStats");
+  if(statsEl) statsEl.innerHTML = `
+    <div class="stat"><b>${total}</b><span>إجمالي الطلبات</span></div>
+    <div class="stat"><b>${pend}</b><span>طلبات جديدة</span></div>
+    <div class="stat"><b>${doneCount}</b><span>طلبات مكتملة</span></div>
+    <div class="stat"><b>${estValue}</b><span>إجمالي القيمة (ر.س)</span></div>`;
+  const listEl=$("#adminOrders"); if(!listEl)return;
+  if(!DB.orders.length){ listEl.innerHTML = `<div class="item" style="color:var(--ink-soft)">لا توجد طلبات بعد.</div>`; return; }
+  const stMap={ "جديد":"st-pending", "تم التواصل":"st-approved", "مكتمل":"st-published" };
+  listEl.innerHTML = DB.orders.map(o=>{
+    const itemsList = (o.items||[]).map(i=>`${esc(i.name)} (${esc(i.size)}) ×${i.qty}`).join("، ");
+    return `
+    <div class="item">
+      <div class="grow">
+        <h4>${esc(o.name)} <span class="status-pill ${stMap[o.status]||'st-pending'}">${esc(o.status)}</span></h4>
+        <p>${itemsList || esc(o.designName||"—")}${o.total!=null?(' — الإجمالي: '+o.total+' ر.س'):''}${o.notes?(" · "+esc(o.notes)):""}</p>
+        <p style="font-size:12px;color:var(--rose)">📱 ${esc(o.phone)} · ${fmtTime(o.ts)}</p>
+      </div>
+      <div class="row-btns">
+        <a class="mini lav" href="${waLinkSmart(o.phone)}" target="_blank" rel="noopener">واتساب</a>
+        <button class="mini ok" data-order-status="${o.id}" data-next="تم التواصل">تم التواصل</button>
+        <button class="mini lav" data-order-status="${o.id}" data-next="مكتمل">مكتمل</button>
+        <button class="mini bad" data-del-order="${o.id}">حذف</button>
+      </div>
+    </div>`;
+  }).join("");
+  $$("[data-order-status]").forEach(b=>b.onclick=()=>{
+    const o=DB.orders.find(x=>x.id==b.dataset.orderStatus); if(!o)return;
+    o.status=b.dataset.next;
+    log("طلبات",`تحديث حالة طلب ${o.name}: ${o.status}`);
+    renderOrdersAdmin();renderDash();persist();
+  });
+  $$("[data-del-order]").forEach(b=>b.onclick=()=>{
+    DB.orders = DB.orders.filter(x=>x.id!=b.dataset.delOrder);
+    log("طلبات","حذف طلب");renderOrdersAdmin();renderDash();persist();toast("تم حذف الطلب");
+  });
+}
+
+/* آراء العملاء */
+$("#submitReview").onclick=()=>{
+  const name=$("#revName").value.trim();
+  const comment=$("#revComment").value.trim();
+  if(!name||!comment){toast("أدخلي اسمك وتعليقك");return;}
+  DB.reviews.push({id:nid(),name,comment,ts:Date.now()});
+  log("آراء",`تعليق جديد من ${name}`);
+  renderStore();renderDash();persist();
+  toast("شكراً لمشاركتك رأيك 🌷");
+  ["revName","revComment"].forEach(i=>$("#"+i).value="");
+};
+function renderReviewsAdmin(){
+  const el=$("#adminReviews"); if(!el)return;
+  if(!DB.reviews.length){ el.innerHTML = `<div class="item" style="color:var(--ink-soft)">لا توجد تعليقات بعد.</div>`; return; }
+  el.innerHTML = DB.reviews.slice().reverse().map(r=>`
+    <div class="item">
+      <div class="grow">
+        <h4>${esc(r.name)}</h4>
+        <p>${esc(r.comment)}</p>
+        <p style="font-size:12px;color:var(--rose)">${fmtTime(r.ts)}</p>
+      </div>
+      <div class="row-btns"><button class="mini bad" data-del-review="${r.id}">حذف</button></div>
+    </div>`).join("");
+  $$("[data-del-review]").forEach(b=>b.onclick=()=>{
+    DB.reviews = DB.reviews.filter(x=>x.id!=b.dataset.delReview);
+    log("آراء","حذف تعليق");renderReviewsAdmin();renderStore();renderDash();persist();
+    toast("تم حذف التعليق");
+  });
+}
 
 /* الأفكار التسويقية */
 function renderMarketing(){
@@ -1017,7 +1402,7 @@ async function loadState(){
     const data = await res.json();
     if(data && data.payload){
       const saved = JSON.parse(data.payload);
-      ["store","admin","pricing","designs","social","replies","marketing"].forEach(k=>{
+      ["store","admin","pricing","designs","social","replies","marketing","reviews","orders"].forEach(k=>{
         if(saved[k]!==undefined) DB[k]=saved[k];
       });
       log("مزامنة","تم تحميل آخر نسخة محفوظة على الإنترنت");
@@ -1035,7 +1420,8 @@ function persist(){
     try{
       const payload = JSON.stringify({
         store: DB.store, admin: DB.admin, pricing: DB.pricing,
-        designs: DB.designs, social: DB.social, replies: DB.replies, marketing: DB.marketing
+        designs: DB.designs, social: DB.social, replies: DB.replies, marketing: DB.marketing,
+        reviews: DB.reviews, orders: DB.orders
       });
       const res = await fetch(STATE_API, {
         method:"POST",
@@ -1054,7 +1440,8 @@ function persist(){
 log("نظام","تشغيل متجر Levanya");
 renderBrand();
 renderStore();
-loadState().then(()=>{ renderBrand(); renderStore(); if(loggedIn) renderAll(); });
+renderCart();
+loadState().then(()=>{ renderBrand(); renderStore(); renderCart(); if(loggedIn) renderAll(); });
 </script>
 </body>
 </html>
