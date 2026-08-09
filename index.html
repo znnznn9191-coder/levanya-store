@@ -137,6 +137,45 @@
   .order-summary-box .os-line{display:flex;justify-content:space-between;font-size:14px;color:var(--ink);padding:6px 0;border-bottom:1px dashed var(--line)}
   .order-summary-box .os-total{display:flex;justify-content:space-between;font-family:"El Messiri";font-weight:700;color:var(--rose-deep);font-size:18px;padding-top:10px;margin-top:4px}
   .cart-empty-note{background:var(--paper-2);border:1px dashed var(--line);border-radius:14px;padding:16px;color:var(--ink-soft);font-size:14px;text-align:center}
+
+  /* زر السلة العائم — أيقونة بس + شارة عدد حمراء */
+  .cart-fab{position:fixed;inset-inline-end:22px;bottom:22px;z-index:60;width:58px;height:58px;border-radius:50%;
+    background:var(--rose-deep);color:#fff;border:none;display:flex;align-items:center;justify-content:center;
+    font-size:26px;box-shadow:0 8px 24px rgba(78,30,40,.35);cursor:pointer;transition:.2s}
+  .cart-fab:hover{transform:translateY(-2px)}
+  .cart-fab .cart-badge{position:absolute;top:-4px;inset-inline-end:-4px;background:var(--bad);color:#fff;
+    font-family:"Tajawal";font-weight:700;font-size:12px;min-width:22px;height:22px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid var(--paper)}
+
+  /* صفحة السلة الكاملة المستقلة */
+  .cart-page{position:fixed;inset:0;z-index:200;background:var(--paper);overflow-y:auto;display:none}
+  .cart-page.open{display:block}
+  .cart-page__top{position:sticky;top:0;background:var(--paper);border-bottom:1px solid var(--line);
+    display:flex;align-items:center;gap:12px;padding:16px 20px;z-index:2}
+  .cart-page__back{background:none;border:none;font-family:"Tajawal";font-size:15px;color:var(--rose-deep);
+    font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px}
+  .cart-page__title{font-family:"El Messiri";font-size:20px;font-weight:700;color:var(--rose-deep);margin:0}
+  .cart-page__body{max-width:640px;margin:0 auto;padding:24px 20px 60px}
+  .cp-item{display:flex;gap:14px;align-items:center;background:#fff;border:1px solid var(--line);
+    border-radius:16px;padding:14px;margin-bottom:12px}
+  .cp-item .cp-thumb{width:64px;height:64px;border-radius:12px;overflow:hidden;flex:none;background:var(--paper-2);
+    display:flex;align-items:center;justify-content:center;font-size:26px}
+  .cp-item .cp-thumb img{width:100%;height:100%;object-fit:cover}
+  .cp-item .cp-info{flex:1;min-width:0}
+  .cp-item .cp-name{font-weight:700;color:var(--ink);font-size:15px;margin-bottom:2px}
+  .cp-item .cp-meta{font-size:13px;color:var(--ink-soft)}
+  .cp-item .cp-qty{display:flex;align-items:center;gap:8px}
+  .cp-item .cp-qty button{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--paper-2);
+    font-size:16px;cursor:pointer;color:var(--ink)}
+  .cp-item .cp-del{background:none;border:none;color:var(--bad);font-size:18px;cursor:pointer;padding:4px}
+  .cart-page__summary{background:var(--paper-2);border-radius:16px;padding:18px;margin:18px 0;
+    display:flex;justify-content:space-between;align-items:center;font-family:"El Messiri";
+    font-weight:700;color:var(--rose-deep);font-size:19px}
+  .pay-options{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:6px}
+  .pay-opt{border:2px solid var(--line);border-radius:12px;padding:12px 6px;text-align:center;
+    cursor:pointer;font-size:13px;color:var(--ink);transition:.15s;background:#fff}
+  .pay-opt.active{border-color:var(--rose-deep);background:rgba(156,90,105,.08);color:var(--rose-deep);font-weight:700}
+  @media (max-width:420px){.pay-options{grid-template-columns:1fr 1fr}}
   .mz-row{display:grid;grid-template-columns:60px 80px 100px 1fr;gap:8px;align-items:center;margin-bottom:8px}
   .mz-row b{color:var(--rose-deep);font-size:14px}
   .mz-row input{border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-family:inherit;font-size:13px;background:var(--paper)}
@@ -322,31 +361,6 @@
     </div>
   </section>
 
-  <section class="block" id="orderSection">
-    <div class="wrap">
-      <div class="sec-head">
-        <div><h2>أرسلي طلبك</h2><p>راجعي سلتك وعبّي بياناتك، وبيوصلنا طلبك فوراً.</p></div>
-      </div>
-      <div class="pricing-card">
-        <div id="orderCartSummary"></div>
-        <div class="form-grid" style="margin-top:16px">
-          <div class="field"><label>اسمك</label><input id="ordName" placeholder="اسمك الكريم"/></div>
-          <div class="field"><label>رقم واتساب</label><input id="ordPhone" placeholder="05xxxxxxxx"/></div>
-          <div class="field"><label>طريقة الدفع المفضّلة</label>
-            <select id="ordPayment">
-              <option value="تحويل بنكي">تحويل بنكي</option>
-              <option value="STC Pay">STC Pay</option>
-              <option value="نقداً عند الاستلام">نقداً عند الاستلام</option>
-            </select>
-          </div>
-          <div class="field"><label>ملاحظات إضافية (اختياري)</label><input id="ordNotes" placeholder="لون معيّن، تاريخ التسليم، إلخ."/></div>
-        </div>
-        <button class="btn primary" id="submitOrder">إرسال الطلب</button>
-        <p id="paymentInfoNote" class="note" style="display:none;margin-top:14px"></p>
-      </div>
-    </div>
-  </section>
-
   <section class="block" id="reviewsSection">
     <div class="wrap">
       <div class="sec-head">
@@ -374,13 +388,37 @@
   </div>
 </div>
 
-<!-- سلة التسوق -->
-<div class="chatbox" id="cartBox" style="inset-inline-start:auto;inset-inline-end:22px">
-  <div class="panel">
-    <div class="chat-h">🛍️ سلة طلبك</div>
-    <div class="chat-log" id="cartLog" style="height:auto;max-height:320px"></div>
+<!-- زر السلة العائم -->
+<button class="cart-fab" id="cartToggle" aria-label="السلة">
+  🛍️<span class="cart-badge" id="cartCount">0</span>
+</button>
+
+<!-- صفحة السلة المستقلة الكاملة -->
+<div class="cart-page" id="cartPage">
+  <div class="cart-page__top">
+    <button class="cart-page__back" id="cartBackBtn">→ رجوع للمتجر</button>
+    <h2 class="cart-page__title">سلتك</h2>
   </div>
-  <button class="chat-toggle" id="cartToggle" style="background:var(--rose-deep)">🛍️ السلة (<span id="cartCount">0</span>)</button>
+  <div class="cart-page__body">
+    <div id="cartPageItems"></div>
+    <div class="cart-page__summary"><span>الإجمالي</span><span id="cartPageTotal">0 ر.س</span></div>
+
+    <div class="pricing-card" style="margin-top:10px">
+      <h3 style="margin:0 0 14px;font-family:'El Messiri';color:var(--rose-deep)">بيانات الطلب</h3>
+      <div class="field"><label>رقم واتساب</label><input id="ordPhone" placeholder="05xxxxxxxx"/></div>
+      <div class="field">
+        <label>طريقة الدفع المفضّلة</label>
+        <div class="pay-options" id="payOptions">
+          <div class="pay-opt active" data-pay="تحويل بنكي">🏦 تحويل بنكي</div>
+          <div class="pay-opt" data-pay="STC Pay">📱 STC Pay</div>
+          <div class="pay-opt" data-pay="نقداً عند الاستلام">💵 نقداً</div>
+        </div>
+      </div>
+      <div class="field" style="margin-top:14px"><label>ملاحظات إضافية (اختياري)</label><input id="ordNotes" placeholder="لون معيّن، تاريخ التسليم، إلخ."/></div>
+      <button class="btn primary" id="submitOrder" style="width:100%;justify-content:center;margin-top:10px">تأكيد الطلب</button>
+      <p id="paymentInfoNote" class="note" style="display:none;margin-top:14px"></p>
+    </div>
+  </div>
 </div>
 
 <!-- chat tester -->
@@ -674,7 +712,7 @@ const DB = {
     nameEn:"Levanya", nameAr:"لفانيا",
     tagline:"ورد كروشيه يدوي، بريدة - القصيم",
     whatsapp:"+966509250195",
-    instagram:"https://instagram.com/levanya111",
+    instagram:"https://instagram.com/levanya111l",
     tiktok:"https://www.tiktok.com/@levanya111",
     location:"بريدة، القصيم",
     paymentInfo:"تحويل بنكي: SA00 0000 0000 0000 0000 00 — أو STC Pay: 0509250195 (عدّلي هذي البيانات من الأمان والدخول)",
@@ -687,10 +725,6 @@ const DB = {
   security:{ failedAttempts:0, lockUntil:0 },
   pricing:{ small:10, medium:15, large:20 },
   designs:[
-    {id:1,type:"bouquet",name:"باقة الليليوم الوردي",desc:"تدرجات وردية بكروشيه يدوي، تغليف Honey Flower.",emoji:"🌸",image:null,imageUrl:"",price:25,oldPrice:null,videoUrl:""},
-    {id:2,type:"bouquet",name:"باقة الليليوم الداكن",desc:"لون عنّابي فاخر يناسب المناسبات الرسمية.",emoji:"🥀",image:null,imageUrl:"",price:25,oldPrice:null,videoUrl:""},
-    {id:3,type:"bouquet",name:"تنسيق الزهور المتعددة",desc:"تشكيلة ألوان في إناء أنيق — مثالية كهدية منزلية.",emoji:"💐",image:null,imageUrl:"",price:40,oldPrice:50,videoUrl:""},
-    {id:4,type:"bouquet",name:"باقة حسب الطلب",desc:"أخبرينا بالألوان والمقاس المفضّل ونصمم لك.",emoji:"🎀",image:null,imageUrl:"",price:null,oldPrice:null,videoUrl:""},
     {id:5,type:"medallion",name:"ميدالية شنطة — زهرة",desc:"ميدالية كروشيه أنيقة تُعلّق على الشنطة أو المفاتيح، بألوان حسب الطلب.",emoji:"🔑",videoUrl:"",
       sizes:{
         small:{price:5, oldPrice:null, image:MZ_SMALL_IMG, imageUrl:""},
@@ -701,7 +735,7 @@ const DB = {
   ],
   social:[
     {id:1,plat:"واتساب",url:"https://wa.me/966509250195"},
-    {id:2,plat:"إنستقرام",url:"https://instagram.com/levanya111"},
+    {id:2,plat:"إنستقرام",url:"https://instagram.com/levanya111l"},
     {id:3,plat:"تيك توك",url:"https://www.tiktok.com/@levanya111"},
     {id:4,plat:"سناب شات",url:"https://www.snapchat.com/add/levanya111"}
   ],
@@ -1350,7 +1384,6 @@ function addToCart(designId){
   else{ cart.push({cartId:nid(), designId, name:d.name, price, size, qty:1}); }
   renderCart();
   toast(`أُضيفت "${d.name}"${size?(' — '+size):''} للسلة 🛍️`);
-  const box=$("#cartBox"); if(!box.classList.contains("open")) box.classList.add("open");
 }
 function changeQty(cartId, delta){
   const item = cart.find(c=>c.cartId==cartId); if(!item)return;
@@ -1365,44 +1398,56 @@ function removeFromCart(cartId){
 function cartTotal(){
   return cart.reduce((sum,c)=> sum + (c.price?Number(c.price)*c.qty:0), 0);
 }
+function cartItemThumb(c){
+  const d = DB.designs.find(x=>x.id==c.designId); if(!d) return "🌸";
+  if(d.type==="medallion"){
+    const key = Object.keys(SIZE_LABELS).find(k=>SIZE_LABELS[k]===c.size);
+    const sz = key && d.sizes && d.sizes[key];
+    const src = sz && (sz.image || (sz.imageUrl?normalizeUrl(sz.imageUrl):null));
+    return src ? `<img src="${src}" alt=""/>` : (designThumbSrc(d)?`<img src="${designThumbSrc(d)}" alt=""/>`:esc(d.emoji||"🔑"));
+  }
+  return designThumbSrc(d) ? `<img src="${designThumbSrc(d)}" alt=""/>` : esc(d.emoji||"🌸");
+}
 function renderCart(){
   $("#cartCount").textContent = cart.reduce((s,c)=>s+c.qty,0);
-  const logEl = $("#cartLog");
-  if(!cart.length){
-    logEl.innerHTML = `<p style="color:var(--ink-soft);font-size:13px;padding:8px 0">سلتك فاضية — أضيفي تصميم من الأعلى.</p>`;
-  }else{
-    logEl.innerHTML = cart.map(c=>`
-      <div class="cart-item">
-        <div class="ci-info">
-          <div class="ci-name">${esc(c.name)}</div>
-          <div class="ci-meta">${c.size?('مقاس '+esc(c.size)+' · '):''}${c.price?(esc(c.price)+' ر.س'):'السعر حسب الطلب'}</div>
-        </div>
-        <div class="ci-qty">
-          <button onclick="changeQty(${c.cartId},-1)">−</button>
-          <span>${c.qty}</span>
-          <button onclick="changeQty(${c.cartId},1)">+</button>
-        </div>
-        <button class="ci-remove" onclick="removeFromCart(${c.cartId})">✕</button>
-      </div>`).join("") + `<div class="cart-total"><span>الإجمالي</span><span>${cartTotal()} ر.س</span></div>`;
+  const itemsEl = $("#cartPageItems");
+  if(itemsEl){
+    if(!cart.length){
+      itemsEl.innerHTML = `<div class="cart-empty-note">🛒 سلتك فاضية حالياً — ارجعي للمتجر وأضيفي التصميم اللي يعجبك.</div>`;
+    }else{
+      itemsEl.innerHTML = cart.map(c=>`
+        <div class="cp-item">
+          <div class="cp-thumb">${cartItemThumb(c)}</div>
+          <div class="cp-info">
+            <div class="cp-name">${esc(c.name)}</div>
+            <div class="cp-meta">${c.size?('مقاس '+esc(c.size)+' · '):''}${c.price?(esc(c.price)+' ر.س'):'السعر حسب الطلب'}</div>
+          </div>
+          <div class="cp-qty">
+            <button onclick="changeQty(${c.cartId},-1)">−</button>
+            <span>${c.qty}</span>
+            <button onclick="changeQty(${c.cartId},1)">+</button>
+          </div>
+          <button class="cp-del" onclick="removeFromCart(${c.cartId})">✕</button>
+        </div>`).join("");
+    }
   }
+  const totalEl = $("#cartPageTotal"); if(totalEl) totalEl.textContent = cartTotal()+" ر.س";
   renderOrderSummary();
 }
-function renderOrderSummary(){
-  const el = $("#orderCartSummary"); if(!el)return;
-  if(!cart.length){
-    el.innerHTML = `<div class="cart-empty-note">🛒 سلتك فاضية حالياً — ارجعي لقسم "تصاميمنا" فوق وأضيفي التصميم اللي يعجبك أول.</div>`;
-    return;
-  }
-  el.innerHTML = `<div class="order-summary-box">
-    <p class="os-title">🧾 ملخّص طلبك (${cart.reduce((s,c)=>s+c.qty,0)} قطعة)</p>
-    ${cart.map(c=>`<div class="os-line">
-      <span>${esc(c.name)}${c.size?(' — '+esc(c.size)):''} <b>×${c.qty}</b></span>
-      <span>${c.price?((c.price*c.qty)+' ر.س'):'حسب الطلب'}</span>
-    </div>`).join("")}
-    <div class="os-total"><span>الإجمالي</span><span>${cartTotal()} ر.س</span></div>
-  </div>`;
-}
-$("#cartToggle").onclick=()=>{ $("#cartBox").classList.toggle("open"); };
+function renderOrderSummary(){}
+$("#cartToggle").onclick=()=>{
+  $("#cartPage").classList.add("open");
+  document.body.style.overflow="hidden";
+  renderCart();
+};
+$("#cartBackBtn").onclick=()=>{
+  $("#cartPage").classList.remove("open");
+  document.body.style.overflow="";
+};
+$$(".pay-opt").forEach(el=>el.onclick=()=>{
+  $$(".pay-opt").forEach(x=>x.classList.remove("active"));
+  el.classList.add("active");
+});
 
 /* الطلبات — نموذج المتجر */
 function waLinkSmart(num){
@@ -1413,17 +1458,17 @@ function waLinkSmart(num){
   return "https://wa.me/"+digits;
 }
 $("#submitOrder").onclick=()=>{
-  const name=$("#ordName").value.trim();
   const phone=$("#ordPhone").value.trim();
   const notes=$("#ordNotes").value.trim();
-  const payment=$("#ordPayment").value;
+  const payEl = $(".pay-opt.active");
+  const payment = payEl ? payEl.dataset.pay : "تحويل بنكي";
   if(!cart.length){toast("سلتك فاضية — أضيفي تصميم أول");return;}
-  if(!name||!phone){toast("أدخلي اسمك ورقم واتساب للتواصل");return;}
+  if(!phone){toast("أدخلي رقم واتساب للتواصل");return;}
   const items = cart.map(c=>({name:c.name, size:c.size, price:c.price, qty:c.qty}));
   const total = cartTotal();
-  const order = {id:nid(), name, phone, items, total, notes, payment, status:"جديد", ts:Date.now()};
+  const order = {id:nid(), phone, items, total, notes, payment, status:"جديد", ts:Date.now()};
   DB.orders.unshift(order);
-  log("طلبات",`طلب جديد من ${name} (${items.length} عنصر)`);
+  log("طلبات",`طلب جديد (${items.length} عنصر) — ${phone}`);
   renderDash();
   persist();
   toast("تم إرسال طلبك، بنتواصل معك قريباً 🌸");
@@ -1433,12 +1478,15 @@ $("#submitOrder").onclick=()=>{
     pn.style.display="block";
   }
   const itemsText = items.map(i=>`- ${i.name} (${i.size}) × ${i.qty}${i.price?(' = '+(i.price*i.qty)+' ر.س'):''}`).join("\n");
-  const msg = `طلب جديد من ${name}\n${itemsText}\nالإجمالي: ${total} ر.س\nطريقة الدفع: ${payment}\nملاحظات: ${notes||"لا يوجد"}\nرقم التواصل: ${phone}`;
+  const msg = `طلب جديد\n${itemsText}\nالإجمالي: ${total} ر.س\nطريقة الدفع: ${payment}\nملاحظات: ${notes||"لا يوجد"}\nرقم التواصل: ${phone}`;
   window.open(waLink(DB.store.whatsapp) + "?text=" + encodeURIComponent(msg), "_blank");
-  ["ordName","ordPhone","ordNotes"].forEach(i=>$("#"+i).value="");
+  ["ordPhone","ordNotes"].forEach(i=>$("#"+i).value="");
   cart = [];
   renderCart();
-  $("#cartBox").classList.remove("open");
+  setTimeout(()=>{
+    $("#cartPage").classList.remove("open");
+    document.body.style.overflow="";
+  }, 1500);
 };
 $("#savePaymentInfo").onclick=()=>{
   DB.store.paymentInfo = $("#paymentInfoField").value.trim();
@@ -1483,9 +1531,9 @@ function renderOrdersAdmin(){
     return `
     <div class="item">
       <div class="grow">
-        <h4>${esc(o.name)} <span class="status-pill ${stMap[o.status]||'st-pending'}">${esc(o.status)}</span></h4>
+        <h4>📱 ${esc(o.phone)} <span class="status-pill ${stMap[o.status]||'st-pending'}">${esc(o.status)}</span></h4>
         <p>${itemsList || esc(o.designName||"—")}${o.total!=null?(' — الإجمالي: '+o.total+' ر.س'):''}${o.notes?(" · "+esc(o.notes)):""}</p>
-        <p style="font-size:12px;color:var(--rose)">📱 ${esc(o.phone)} · ${fmtTime(o.ts)}</p>
+        <p style="font-size:12px;color:var(--rose)">${o.payment?('💳 '+esc(o.payment)+' · '):''}${fmtTime(o.ts)}</p>
       </div>
       <div class="row-btns">
         <a class="mini lav" href="${waLinkSmart(o.phone)}" target="_blank" rel="noopener">واتساب</a>
@@ -1498,7 +1546,7 @@ function renderOrdersAdmin(){
   $$("[data-order-status]").forEach(b=>b.onclick=()=>{
     const o=DB.orders.find(x=>x.id==b.dataset.orderStatus); if(!o)return;
     o.status=b.dataset.next;
-    log("طلبات",`تحديث حالة طلب ${o.name}: ${o.status}`);
+    log("طلبات",`تحديث حالة طلب ${o.phone}: ${o.status}`);
     renderOrdersAdmin();renderDash();persist();
   });
   $$("[data-del-order]").forEach(b=>b.onclick=()=>{
